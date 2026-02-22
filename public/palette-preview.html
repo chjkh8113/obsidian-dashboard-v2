@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian v6 - Color Palette Options</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+            font-size: 2rem;
+        }
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .palette-card {
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        .palette-bg {
+            height: 300px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass-demo {
+            width: 280px;
+            height: 160px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .glass-demo h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .glass-demo p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .palette-info {
+            padding: 24px;
+            background: #111;
+        }
+        .palette-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .color-swatches {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .swatch {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .swatch:hover {
+            transform: scale(1.1);
+        }
+        .swatch::after {
+            content: attr(data-color);
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            opacity: 0.6;
+            white-space: nowrap;
+        }
+        .palette-desc {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+
+        /* Option A: Deep Space */
+        .deep-space .palette-bg {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            position: relative;
+        }
+        .deep-space .palette-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, rgba(0, 217, 255, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(255, 0, 110, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(131, 56, 236, 0.25) 0%, transparent 60%);
+        }
+
+        /* Option B: Midnight Ocean */
+        .midnight-ocean .palette-bg {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%);
+        }
+        .midnight-ocean .palette-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(0, 245, 212, 0.35) 0%, transparent 45%),
+                radial-gradient(ellipse at 70% 80%, rgba(0, 187, 249, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 30%, rgba(254, 228, 64, 0.2) 0%, transparent 40%);
+        }
+
+        /* Option C: Warm Ember */
+        .warm-ember .palette-bg {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1f1f 50%, #1a1a1a 100%);
+        }
+        .warm-ember .palette-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 25% 75%, rgba(255, 107, 53, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 75% 25%, rgba(247, 197, 159, 0.25) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(239, 160, 11, 0.2) 0%, transparent 55%);
+        }
+
+        /* Option D: Obsidian Classic */
+        .obsidian-classic .palette-bg {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1e1e2e 50%, #0f0f0f 100%);
+        }
+        .obsidian-classic .palette-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 40% 30%, rgba(124, 58, 237, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 70%, rgba(167, 139, 250, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(196, 181, 253, 0.15) 0%, transparent 40%);
+        }
+
+        .vote-section {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: #111;
+            border-radius: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .vote-section h2 {
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        .vote-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .vote-btn {
+            padding: 12px 28px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .vote-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Obsidian v6 — Liquid Glass Color Palettes</h1>
+    
+    <div class="palette-grid">
+        <!-- Option A: Deep Space -->
+        <div class="palette-card deep-space">
+            <div class="palette-bg">
+                <div class="glass-demo">
+                    <h3>Dashboard Card</h3>
+                    <p>Liquid glass preview</p>
+                </div>
+            </div>
+            <div class="palette-info">
+                <div class="palette-name">A. Deep Space 🌌</div>
+                <div class="color-swatches">
+                    <div class="swatch" style="background: #0a0a0f;" data-color="#0a0a0f"></div>
+                    <div class="swatch" style="background: #1a1a2e;" data-color="#1a1a2e"></div>
+                    <div class="swatch" style="background: #00d9ff;" data-color="#00d9ff"></div>
+                    <div class="swatch" style="background: #ff006e;" data-color="#ff006e"></div>
+                    <div class="swatch" style="background: #8338ec;" data-color="#8338ec"></div>
+                </div>
+                <p class="palette-desc">Dramatic aurora vibes. Cyan, magenta & purple glows on deep space black. Best for bold, modern dashboards.</p>
+            </div>
+        </div>
+
+        <!-- Option B: Midnight Ocean -->
+        <div class="palette-card midnight-ocean">
+            <div class="palette-bg">
+                <div class="glass-demo">
+                    <h3>Dashboard Card</h3>
+                    <p>Liquid glass preview</p>
+                </div>
+            </div>
+            <div class="palette-info">
+                <div class="palette-name">B. Midnight Ocean 🌊</div>
+                <div class="color-swatches">
+                    <div class="swatch" style="background: #0d1b2a;" data-color="#0d1b2a"></div>
+                    <div class="swatch" style="background: #1b263b;" data-color="#1b263b"></div>
+                    <div class="swatch" style="background: #00f5d4;" data-color="#00f5d4"></div>
+                    <div class="swatch" style="background: #00bbf9;" data-color="#00bbf9"></div>
+                    <div class="swatch" style="background: #fee440;" data-color="#fee440"></div>
+                </div>
+                <p class="palette-desc">Professional yet vibrant. Teal & blue with gold accents. Clean, corporate-friendly but still eye-catching.</p>
+            </div>
+        </div>
+
+        <!-- Option C: Warm Ember -->
+        <div class="palette-card warm-ember">
+            <div class="palette-bg">
+                <div class="glass-demo">
+                    <h3>Dashboard Card</h3>
+                    <p>Liquid glass preview</p>
+                </div>
+            </div>
+            <div class="palette-info">
+                <div class="palette-name">C. Warm Ember 🔥</div>
+                <div class="color-swatches">
+                    <div class="swatch" style="background: #1a1a1a;" data-color="#1a1a1a"></div>
+                    <div class="swatch" style="background: #2d1f1f;" data-color="#2d1f1f"></div>
+                    <div class="swatch" style="background: #ff6b35;" data-color="#ff6b35"></div>
+                    <div class="swatch" style="background: #f7c59f;" data-color="#f7c59f"></div>
+                    <div class="swatch" style="background: #efa00b;" data-color="#efa00b"></div>
+                </div>
+                <p class="palette-desc">Unique warm alternative. Orange, peach & amber on charcoal. Stands out from typical cold glass UIs.</p>
+            </div>
+        </div>
+
+        <!-- Option D: Obsidian Classic -->
+        <div class="palette-card obsidian-classic">
+            <div class="palette-bg">
+                <div class="glass-demo">
+                    <h3>Dashboard Card</h3>
+                    <p>Liquid glass preview</p>
+                </div>
+            </div>
+            <div class="palette-info">
+                <div class="palette-name">D. Obsidian Classic 💎</div>
+                <div class="color-swatches">
+                    <div class="swatch" style="background: #0f0f0f;" data-color="#0f0f0f"></div>
+                    <div class="swatch" style="background: #1e1e2e;" data-color="#1e1e2e"></div>
+                    <div class="swatch" style="background: #7c3aed;" data-color="#7c3aed"></div>
+                    <div class="swatch" style="background: #a78bfa;" data-color="#a78bfa"></div>
+                    <div class="swatch" style="background: #c4b5fd;" data-color="#c4b5fd"></div>
+                </div>
+                <p class="palette-desc">True to the "Obsidian" name. Purple & lavender on deep black. Elegant, mysterious, cohesive branding.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="vote-section">
+        <h2>Which palette speaks to you?</h2>
+        <div class="vote-buttons">
+            <button class="vote-btn">A. Deep Space</button>
+            <button class="vote-btn">B. Midnight Ocean</button>
+            <button class="vote-btn">C. Warm Ember</button>
+            <button class="vote-btn">D. Obsidian Classic</button>
+        </div>
+    </div>
+</body>
+</html>
